@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<StackPane fx:id="rootPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="org.turter.musicapp.ui.main.MainController">
+    <children>
+        <VBox fx:id="mainVBox" prefHeight="900.0" prefWidth="1200.0">
+            <children>
+                <fx:define>
+                    <Font fx:id="x1" size="18"/>
+                    <Color fx:id="x2" red="0.624" green="0.624" blue="0.624"/>
+                </fx:define>
+                <MenuBar VBox.vgrow="NEVER">
+                    <menus>
+                        <Menu mnemonicParsing="false" text="Композиция">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Слушать" onAction="#handleListenResult"/>
+                                <MenuItem mnemonicParsing="false" text="Экспорт…" onAction="#handleExportComposition"/>
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Треки">
+                            <items>
+                                <MenuItem fx:id="updateTracksMenuItem" mnemonicParsing="false" text="Обновить"
+                                          onAction="#handleUpdateTracks"/>
+                                <MenuItem fx:id="addTrackMenuItem" mnemonicParsing="false" text="Добавить"
+                                          onAction="#handleAddTrack"/>
+                            </items>
+                        </Menu>
+                    </menus>
+                </MenuBar>
+                <SplitPane dividerPositions="0.17483296213808464, 0.7115812917594655" focusTraversable="true"
+                           prefHeight="-1.0"
+                           prefWidth="-1.0" VBox.vgrow="ALWAYS">
+                    <items>
+                        <AnchorPane>
+                            <children>
+                                <VBox spacing="10.0" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0"
+                                      AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0" minWidth="100">
+                                    <Label text="Композиция" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                                    <VBox spacing="10.0">
+                                        <Button text="Слушать" onAction="#handleListenResult" maxWidth="Infinity"/>
+                                        <Button fx:id="compositionExportBtn" text="Экспорт"
+                                                onAction="#handleExportComposition" maxWidth="Infinity"/>
+                                    </VBox>
+                                </VBox>
+                            </children>
+                        </AnchorPane>
+                        <ScrollPane prefHeight="-1.0" prefWidth="-1.0">
+                            <content>
+                                <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="540.0"
+                                            prefWidth="430.0">
+                                    <children>
+                                        <VBox fx:id="sequencerTracksVBox" spacing="5.0" AnchorPane.topAnchor="10.0"
+                                              AnchorPane.leftAnchor="10.0"/>
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </ScrollPane>
+                        <AnchorPane>
+                            <children>
+                                <VBox alignment="TOP_CENTER" spacing="10.0" AnchorPane.topAnchor="10.0"
+                                      AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0"
+                                      AnchorPane.bottomAnchor="10.0">
+                                    <Label text="Список треков" font="$x1"/>
+                                    <ListView fx:id="trackListView"
+                                              minWidth="300.0"
+                                              VBox.vgrow="ALWAYS"
+                                              AnchorPane.leftAnchor="0.0"
+                                              AnchorPane.rightAnchor="0.0"
+                                    />
+                                </VBox>
+                            </children>
+                        </AnchorPane>
+                    </items>
+                </SplitPane>
+                <HBox id="HBox" alignment="CENTER" prefHeight="86.0" prefWidth="900.0" spacing="5.0"
+                      VBox.vgrow="NEVER">
+                    <children>
+                        <Label fx:id="trackNameLabel" text="Трек: ---" prefWidth="150.0"/>
+                        <Button fx:id="playButton" onAction="#handlePlay">
+                            <graphic>
+                                <FontIcon iconLiteral="mdi-play" iconSize="16"/>
+                            </graphic>
+                        </Button>
+                        <Button fx:id="pauseButton" onAction="#handlePause">
+                            <graphic>
+                                <FontIcon iconLiteral="mdi-pause" iconSize="16"/>
+                            </graphic>
+                        </Button>
+                        <Button fx:id="stopButton" onAction="#handleStop">
+                            <graphic>
+                                <FontIcon iconLiteral="mdi-stop" iconSize="16"/>
+                            </graphic>
+                        </Button>
+                        <Slider fx:id="progressSlider" prefWidth="400.0"/>
+                        <Label fx:id="timeLabel" text="00:00 / 00:00" prefWidth="100.0"/>
+                        <Label text="Громкость:" prefWidth="100.0"/>
+                        <Slider fx:id="volumeSlider" min="0" max="1" value="0.5" blockIncrement="0.1"
+                                HBox.hgrow="NEVER"/>
+                    </children>
+                    <padding>
+                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
+                    </padding>
+                </HBox>
+            </children>
+        </VBox>
+
+        <AnchorPane fx:id="overlayPane" visible="false" style="-fx-background-color: rgba(0, 0, 0, 0.4);">
+            <children>
+                <StackPane AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+                           AnchorPane.bottomAnchor="0">
+                    <ProgressIndicator fx:id="mainProgressIndicator"/>
+                </StackPane>
+            </children>
+        </AnchorPane>
+
+    </children>
+</StackPane>
