@@ -1,4 +1,4 @@
-package org.turter.musicapp.data.service;
+package org.turter.musicapp.data.service.composition;
 
 import com.github.kokorin.jaffree.ffmpeg.FFmpeg;
 import com.github.kokorin.jaffree.ffmpeg.UrlInput;

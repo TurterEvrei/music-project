@@ -19,6 +19,7 @@
                     <menus>
                         <Menu mnemonicParsing="false" text="Композиция">
                             <items>
+                                <MenuItem mnemonicParsing="false" text="Открыть" onAction="#handleOpenCompositionSelector"/>
                                 <MenuItem mnemonicParsing="false" text="Слушать" onAction="#handleListenResult"/>
                                 <MenuItem mnemonicParsing="false" text="Экспорт…" onAction="#handleExportComposition"/>
                             </items>
@@ -41,11 +42,14 @@
                             <children>
                                 <VBox spacing="10.0" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0"
                                       AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0" minWidth="100">
-                                    <Label text="Композиция" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                                    <Label fx:id="compositionLabel" text="Композиция" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
                                     <VBox spacing="10.0">
+                                        <Button text="Изменить название" onAction="#handleOpenCompositionTitleEditor" maxWidth="Infinity"/>
                                         <Button text="Слушать" onAction="#handleListenResult" maxWidth="Infinity"/>
                                         <Button fx:id="compositionExportBtn" text="Экспорт"
                                                 onAction="#handleExportComposition" maxWidth="Infinity"/>
+                                        <Button text="Сохранить" onAction="#handleSaveOrUpdateComposition" maxWidth="Infinity"/>
+                                        <Button text="Удалить" onAction="#handleDeleteComposition" maxWidth="Infinity"/>
                                     </VBox>
                                 </VBox>
                             </children>

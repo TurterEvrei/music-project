@@ -6,6 +6,7 @@ import org.turter.musiccatalogue.dto.TrackClipDto;
 import org.turter.musiccatalogue.dto.payload.NewTrackClipPayload;
 import org.turter.musiccatalogue.dto.payload.TrackClipPayload;
 import org.turter.musiccatalogue.entity.AudioTrack;
+import org.turter.musiccatalogue.entity.Composition;
 import org.turter.musiccatalogue.entity.TrackClip;
 
 import java.util.List;
@@ -21,6 +22,6 @@ public interface TrackClipMapper {
     TrackClip toNewEntity(NewTrackClipPayload payload, AudioTrack audioTrack);
 
     @Mapping(target = "id", source = "payload.id")
-    TrackClip toEntity(TrackClipPayload payload, AudioTrack audioTrack);
+    TrackClip toEntity(TrackClipPayload payload, AudioTrack audioTrack, Composition composition);
 
 }

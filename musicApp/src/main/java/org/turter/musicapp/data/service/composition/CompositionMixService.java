@@ -1,4 +1,4 @@
-package org.turter.musicapp.data.service;
+package org.turter.musicapp.data.service.composition;
 
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -18,7 +18,7 @@ public class CompositionMixService extends Service<String> {
             @Override
             protected String call() throws Exception {
                 try {
-                    String outputPath = CACHE_DIR + composition.getName() + ".mp3";
+                    String outputPath = CACHE_DIR + composition.getTitle() + ".mp3";
                     CompositionMixer.mixTracks(composition.getTracks(), outputPath, CompositionMixer.AudioFormat.MP3);
                     composition.setResultFilePath(outputPath);
                     return outputPath;

@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -69,6 +70,13 @@ public class TrackCacheStore {
      */
     public static List<AudioTrack> getCachedTracks() {
         return STORE.values().stream().sorted(Comparator.comparing(AudioTrack::getName)).toList();
+    }
+
+    /**
+     * Возвращает AudioTrack по id
+     */
+    public static Optional<AudioTrack> getCachedTrack(String id) {
+        return Optional.ofNullable(STORE.get(id));
     }
 
     /**

@@ -1,9 +1,6 @@
 package org.turter.musiccatalogue.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import jakarta.persistence.*;
 import java.util.HashSet;
@@ -14,6 +11,8 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = {"tracks"})
+@ToString(exclude = {"tracks"})
 @Builder
 public class Composition {
     @Id
@@ -24,7 +23,7 @@ public class Composition {
     private String title;
 
     @Builder.Default
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "composition_id")
     private Set<TrackClip> tracks = new HashSet<>();
 }

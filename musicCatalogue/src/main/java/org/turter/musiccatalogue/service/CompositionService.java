@@ -8,13 +8,16 @@ import org.turter.musiccatalogue.dto.payload.NewCompositionPayload;
 import org.turter.musiccatalogue.dto.CompositionInfo;
 import org.turter.musiccatalogue.dto.CompositionPreview;
 import org.turter.musiccatalogue.entity.Composition;
+import org.turter.musiccatalogue.entity.TrackClip;
 import org.turter.musiccatalogue.mapper.CompositionMapper;
 import org.turter.musiccatalogue.mapper.TrackClipMapper;
 import org.turter.musiccatalogue.repository.impl.AudioTrackDao;
 import org.turter.musiccatalogue.repository.impl.CompositionDao;
+import org.turter.musiccatalogue.repository.impl.TrackClipDao;
 import org.turter.musiccatalogue.util.ExceptionSupplier;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,6 +25,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CompositionService {
     private final CompositionDao compositionDao;
+    private final TrackClipDao trackClipDao;
     private final AudioTrackDao audioTrackDao;
     private final CompositionMapper compositionMapper;
     private final TrackClipMapper trackClipMapper;
@@ -51,9 +55,21 @@ public class CompositionService {
     }
 
     public CompositionInfo update(CompositionPayload payload) {
-        Composition entity = compositionMapper.toEntity(payload, payload.tracks().stream()
-                .map(p -> trackClipMapper.toEntity(p, audioTrackDao.findById(p.audioTrackId())))
-                .collect(Collectors.toSet()));
+        Long compositionId = payload.id();
+        Composition savedComposition = compositionDao.findById(compositionId);
+        if (savedComposition == null) throw ExceptionSupplier.compositionNotFound(compositionId);
+
+        Set<TrackClip> trackClips = payload.tracks().stream()
+                .map(p -> trackClipMapper.toEntity(p, audioTrackDao.findById(p.audioTrackId()), savedComposition))
+                .collect(Collectors.toSet());
+        trackClips.forEach(trackClip -> {
+            if (trackClip.isNew()) {
+                trackClipDao.save(trackClip);
+            } else {
+                trackClipDao.update(trackClip);
+            }
+        });
+        Composition entity = compositionMapper.toEntity(payload, trackClips, savedComposition);
         compositionDao.update(entity);
         return compositionMapper.toInfo(entity);
     }

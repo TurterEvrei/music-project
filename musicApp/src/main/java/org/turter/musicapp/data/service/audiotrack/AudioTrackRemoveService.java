@@ -1,21 +1,17 @@
-package org.turter.musicapp.data.service;
+package org.turter.musicapp.data.service.audiotrack;
 
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import org.turter.musicapp.data.dto.AudioTrackDto;
-import org.turter.musicapp.data.dto.NewAudioTrackDto;
 import org.turter.musicapp.data.local.cache.TrackCacheStore;
-import org.turter.musicapp.data.remote.client.TrackApiClient;
-import org.turter.musicapp.data.remote.client.TrackApiClientImpl;
+import org.turter.musicapp.data.remote.client.AudioTrackApiClient;
+import org.turter.musicapp.data.remote.client.AudioTrackApiClientImpl;
 import org.turter.musicapp.domain.AudioTrack;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 
 public class AudioTrackRemoveService extends Service<Void> {
     private final AudioTrack track;
-    private final TrackApiClient client = TrackApiClientImpl.getInstance();
+    private final AudioTrackApiClient client = AudioTrackApiClientImpl.getInstance();
 
     public AudioTrackRemoveService(AudioTrack track) {
         this.track = track;

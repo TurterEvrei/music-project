@@ -1,4 +1,4 @@
-package org.turter.musicapp.data.service;
+package org.turter.musicapp.data.service.composition;
 
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;

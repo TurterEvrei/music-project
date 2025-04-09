@@ -1,17 +1,17 @@
-package org.turter.musicapp.data.service;
+package org.turter.musicapp.data.service.audiotrack;
 
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import org.turter.musicapp.data.local.cache.TrackCacheStore;
-import org.turter.musicapp.data.remote.client.TrackApiClient;
-import org.turter.musicapp.data.remote.client.TrackApiClientImpl;
+import org.turter.musicapp.data.remote.client.AudioTrackApiClient;
+import org.turter.musicapp.data.remote.client.AudioTrackApiClientImpl;
 import org.turter.musicapp.domain.AudioTrack;
 import org.turter.musicapp.data.dto.AudioTrackDto;
 
 import java.util.List;
 
 public class AudioTracksUpdateService extends Service<List<AudioTrack>> {
-    private final TrackApiClient client = TrackApiClientImpl.getInstance();
+    private final AudioTrackApiClient client = AudioTrackApiClientImpl.getInstance();
 
     @Override
     protected Task<List<AudioTrack>> createTask() {

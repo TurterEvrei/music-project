@@ -1,8 +1,11 @@
 package org.turter.musicapp.domain;
 
-import java.util.Objects;
+import lombok.Builder;
+import lombok.Data;
 
+@Data
 public class TrackClip {
+    private Long remoteId;
     private AudioTrack audioTrack;
     private long startTimeMs;
     private double volume;
@@ -27,44 +30,5 @@ public class TrackClip {
     public TrackClip setVolume(double volume) {
         this.volume = Math.max(0.0, Math.min(1.0, volume));
         return this;
-    }
-
-    public AudioTrack getAudioTrack() {
-        return audioTrack;
-    }
-
-    public TrackClip setAudioTrack(AudioTrack audioTrack) {
-        this.audioTrack = audioTrack;
-        return this;
-    }
-
-    public long getStartTimeMs() {
-        return startTimeMs;
-    }
-
-    public double getVolume() {
-        return volume;
-    }
-
-    public long getDurationMs() {
-        return durationMs;
-    }
-
-    public TrackClip setDurationMs(long durationMs) {
-        this.durationMs = durationMs;
-        return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TrackClip trackClip = (TrackClip) o;
-        return startTimeMs == trackClip.startTimeMs && Double.compare(volume, trackClip.volume) == 0 && durationMs == trackClip.durationMs && Objects.equals(audioTrack, trackClip.audioTrack);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(audioTrack, startTimeMs, volume, durationMs);
     }
 }

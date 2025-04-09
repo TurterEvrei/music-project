@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -18,12 +19,16 @@ import javafx.util.Duration;
 import org.turter.musicapp.MusicApplication;
 import org.turter.musicapp.data.local.cache.TrackCacheStore;
 import org.turter.musicapp.data.mapper.CompositionMapper;
-import org.turter.musicapp.data.service.*;
+import org.turter.musicapp.data.service.audiotrack.AudioTrackRemoveService;
+import org.turter.musicapp.data.service.audiotrack.AudioTracksUpdateService;
+import org.turter.musicapp.data.service.composition.*;
 import org.turter.musicapp.domain.AudioTrack;
 import org.turter.musicapp.domain.Composition;
 import org.turter.musicapp.domain.TrackClip;
 import org.turter.musicapp.ui.main.components.TrackCell;
 import org.turter.musicapp.ui.main.components.TrackRowContainer;
+import org.turter.musicapp.ui.modal.composition.selector.CompositionSelectorController;
+import org.turter.musicapp.ui.modal.composition.titleeditor.CompositionTitleEditorController;
 import org.turter.musicapp.ui.utils.UiUtils;
 
 import java.io.File;
@@ -32,8 +37,10 @@ import java.io.IOException;
 import static org.turter.musicapp.ui.utils.UiUtils.*;
 
 public class MainController {
-    private final static Composition SCREEN_COMPOSITION = new Composition("Новая композиция");
+    private Composition currentComposition = MainScreenSupplier.getDefaultComposition();
 
+    @FXML
+    private Label compositionLabel;
     @FXML
     private AnchorPane overlayPane;
     @FXML
@@ -59,6 +66,7 @@ public class MainController {
         setUpTracks();
         setupVolumeSlider();
         setupPlayerProgressSlider();
+        renderComposition();
     }
 
     /**
@@ -116,9 +124,9 @@ public class MainController {
     private void renderSequencer() {
         sequencerTracksVBox.getChildren().clear();
 
-        for (TrackClip clip : SCREEN_COMPOSITION.getTracks()) {
+        for (TrackClip clip : currentComposition.getTracks()) {
             TrackRowContainer trackRowContainer = new TrackRowContainer(clip, () -> {
-                SCREEN_COMPOSITION.removeTrack(clip);
+                currentComposition.removeTrack(clip);
                 renderSequencer();
                 return null;
             });
@@ -127,14 +135,21 @@ public class MainController {
     }
 
     /**
+     * Отрисовка композиции
+     */
+    private void renderComposition() {
+        compositionLabel.setText(currentComposition.getTitle());
+    }
+
+    /**
      * Хендлер для кнопки "Слушать" композиции
      */
     @FXML
     private void handleListenResult(ActionEvent event) {
         if (!validateComposition()) return;
-        CompositionMixService mixService = new CompositionMixService(SCREEN_COMPOSITION);
+        CompositionMixService mixService = new CompositionMixService(currentComposition);
 
-        mixService.setOnSucceeded(e -> startTrack(CompositionMapper.toAudioTrack(SCREEN_COMPOSITION)));
+        mixService.setOnSucceeded(e -> startTrack(CompositionMapper.toAudioTrack(currentComposition)));
         mixService.setOnFailed(e -> showErrorAlert("Информация", "Ошибка микширования"));
 
         mixService.start();
@@ -153,7 +168,7 @@ public class MainController {
                 new FileChooser.ExtensionFilter("FLAC (*.flac)", "*.flac"),
                 new FileChooser.ExtensionFilter("WAV (*.wav)", "*.wav")
         );
-        fileChooser.setInitialFileName(SCREEN_COMPOSITION.getName() + ".mp3");
+        fileChooser.setInitialFileName(currentComposition.getTitle() + ".mp3");
         File file = fileChooser.showSaveDialog(compositionExportBtn.getScene().getWindow());
 
         if (file != null) {
@@ -165,7 +180,7 @@ public class MainController {
                 return;
             }
 
-            CompositionExportService exportService = new CompositionExportService(outputPath, SCREEN_COMPOSITION, format);
+            CompositionExportService exportService = new CompositionExportService(outputPath, currentComposition, format);
             exportService.setOnSucceeded(ev -> showConfirmationAlert("Успех", "Композиция экспортирована:\n" + outputPath));
             exportService.setOnFailed(ev -> showErrorAlert("Ошибка", "Ошибка при экспорте: " + exportService.getException().getMessage()));
             exportService.start();
@@ -175,8 +190,8 @@ public class MainController {
     /**
      * Валидация композиции
      */
-    private static boolean validateComposition() {
-        if (SCREEN_COMPOSITION.getTracks().isEmpty()) {
+    private boolean validateComposition() {
+        if (currentComposition.getTracks().isEmpty()) {
             shoWarningAlert("Внимание.", "Список треков секвенсора не должен быть пуст");
             return false;
         }
@@ -228,7 +243,7 @@ public class MainController {
         long durationMs = audioTrack.getDurationMs(); // Длительность из файла
         TrackClip newClip = new TrackClip(audioTrack, 0, durationMs);
 
-        SCREEN_COMPOSITION.addTrack(newClip);
+        currentComposition.addTrack(newClip);
         renderSequencer();
     }
 
@@ -376,6 +391,128 @@ public class MainController {
             overlayPane.setVisible(false);
             mainProgressIndicator.setProgress(0);
         });
+    }
+
+    /**
+     * Хэндлер для кнопки "Открыть" в меню "Композиции"
+     */
+    @FXML
+    private void handleOpenCompositionSelector(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(MusicApplication.class.getResource("composition-selector.fxml"));
+            Parent root = loader.load();
+
+            CompositionSelectorController controller = loader.getController();
+
+            controller.setOnCompositionSelected(composition -> {
+                this.currentComposition = CompositionMapper.toComposition(composition);
+                System.out.println("Выбрана композиция: " + composition.title());
+                renderComposition();
+                renderSequencer();
+            });
+
+            Stage modalStage = new Stage();
+            modalStage.initModality(Modality.APPLICATION_MODAL);
+            modalStage.setTitle("Выбор композиции");
+            modalStage.setScene(new Scene(root));
+            modalStage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Ошибка при открытии окна выбора композиции");
+            alert.showAndWait();
+        }
+    }
+
+    /**
+     * Хэндлер для изменения названия композиции
+     */
+    @FXML
+    private void handleOpenCompositionTitleEditor(ActionEvent event) {
+        if (currentComposition == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Сначала выберите композицию.");
+            alert.showAndWait();
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(MusicApplication.class.getResource("composition-title-editor.fxml"));
+            Parent root = loader.load();
+
+            CompositionTitleEditorController controller = loader.getController();
+            controller.setInitialTitle(currentComposition.getTitle());
+            controller.setOnTitleConfirmed(newTitle -> {
+                currentComposition.setTitle(newTitle);
+                System.out.println("Новое название композиции: " + newTitle);
+                renderComposition();
+            });
+
+            Stage modalStage = new Stage();
+            modalStage.initModality(Modality.APPLICATION_MODAL);
+            modalStage.setTitle("Изменение названия композиции");
+            modalStage.setScene(new Scene(root));
+            modalStage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Не удалось открыть окно редактирования");
+            alert.showAndWait();
+        }
+    }
+
+    /**
+     * Сохраняет изменения композиции или создает новую в удаленном репозитории
+     */
+    public void handleSaveOrUpdateComposition(ActionEvent event) {
+        showLoadingOverlay();
+
+        CompositionSaveService saveService = new CompositionSaveService(currentComposition);
+
+        saveService.stateProperty().addListener(UiUtils.getFinalListener(this::hideLoadingOverlay));
+        saveService.setOnSucceeded(e -> {
+            currentComposition = CompositionMapper.toComposition(saveService.getValue());
+            showConfirmationAlert("Готово!", "Композиция сохранена");
+            renderComposition();
+            renderSequencer();
+        });
+        saveService.setOnFailed(e -> showErrorAlert("Ошибка", "Не удалось сохранить композицию"));
+        saveService.setOnCancelled(e -> showErrorAlert("Ошибка", "Сохранение отменено"));
+
+        saveService.start();
+    }
+
+    /**
+     * Удаляет композицию из удаленного репозитория
+     */
+    public void handleDeleteComposition(ActionEvent event) {
+        if (currentComposition.isNew()) {
+            resetCompositionToDefault();
+        } else {
+            showLoadingOverlay();
+
+            CompositionDeleteService deleteService = new CompositionDeleteService(currentComposition.getId());
+
+            deleteService.stateProperty().addListener(UiUtils.getFinalListener(this::hideLoadingOverlay));
+            deleteService.setOnSucceeded(e -> {
+                currentComposition = MainScreenSupplier.getDefaultComposition();
+                showConfirmationAlert("Готово!", "Композиция удалена");
+                renderComposition();
+                renderSequencer();
+            });
+            deleteService.setOnFailed(e -> showErrorAlert("Ошибка", "Не удалось удалить композицию"));
+            deleteService.setOnCancelled(e -> showErrorAlert("Ошибка", "Удаление отменено"));
+
+            deleteService.start();
+        }
+    }
+
+    /**
+     * Сбрасывает композицию до значения по умолчанию и вызывает ререндер информации о композиции и секвенсора
+     */
+    private void resetCompositionToDefault() {
+        currentComposition = MainScreenSupplier.getDefaultComposition();
+        renderComposition();
+        renderSequencer();
     }
 }
 

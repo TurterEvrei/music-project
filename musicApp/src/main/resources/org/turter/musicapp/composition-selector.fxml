@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.turter.musicapp.ui.modal.composition.selector.CompositionSelectorController"
+            prefWidth="400" prefHeight="300">
+
+    <center>
+        <ListView fx:id="compositionListView" />
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_RIGHT">
+            <Button fx:id="selectButton" text="Открыть" disable="true" onAction="#handleSelect"/>
+            <Button text="Закрыть" onAction="#handleClose"/>
+        </HBox>
+    </bottom>
+</BorderPane>

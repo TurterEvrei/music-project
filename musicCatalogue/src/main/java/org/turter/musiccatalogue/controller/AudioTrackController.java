@@ -32,7 +32,7 @@ public class AudioTrackController {
         return service.save(payload);
     }
 
-    @PutMapping()
+    @PutMapping
     public AudioTrackDto update(@Valid @RequestBody AudioTrackPayload payload) {
         return service.update(payload);
     }

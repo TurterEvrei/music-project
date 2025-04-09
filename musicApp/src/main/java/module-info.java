@@ -16,6 +16,8 @@ module org.turter.musicapp {
     requires org.slf4j;
     requires com.fasterxml.jackson.databind;
     requires java.net.http;
+    requires org.mapstruct;
+    requires static lombok;
 
     opens org.turter.musicapp to javafx.fxml;
     opens org.turter.musicapp.data.dto to com.fasterxml.jackson.databind;
@@ -26,4 +28,9 @@ module org.turter.musicapp {
     opens org.turter.musicapp.ui.main.components to javafx.fxml;
     exports org.turter.musicapp.ui.modal.track.add;
     opens org.turter.musicapp.ui.modal.track.add to javafx.fxml;
+    opens org.turter.musicapp.data.dto.payload to com.fasterxml.jackson.databind;
+    exports org.turter.musicapp.ui.modal.composition.selector;
+    opens org.turter.musicapp.ui.modal.composition.selector to javafx.fxml;
+    exports org.turter.musicapp.ui.modal.composition.titleeditor;
+    opens org.turter.musicapp.ui.modal.composition.titleeditor to javafx.fxml;
 }

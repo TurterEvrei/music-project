@@ -1,9 +1,6 @@
 package org.turter.musiccatalogue.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import jakarta.persistence.*;
 
@@ -30,4 +27,12 @@ public class TrackClip {
     @ManyToOne
     @JoinColumn(name = "audio_track_id")
     private AudioTrack audioTrack;
+
+    @ManyToOne
+    @JoinColumn(name = "composition_id")
+    private Composition composition;
+
+    public boolean isNew() {
+        return id == null || id == 0;
+    }
 }

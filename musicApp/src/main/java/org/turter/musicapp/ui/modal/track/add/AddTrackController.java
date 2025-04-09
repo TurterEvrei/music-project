@@ -8,7 +8,7 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.turter.musicapp.data.service.AudioTrackUploadService;
+import org.turter.musicapp.data.service.audiotrack.AudioTrackUploadService;
 import org.turter.musicapp.ui.utils.UiUtils;
 
 import java.io.File;

@@ -1,12 +1,12 @@
-package org.turter.musicapp.data.service;
+package org.turter.musicapp.data.service.audiotrack;
 
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import org.turter.musicapp.data.local.cache.TrackCacheStore;
-import org.turter.musicapp.data.remote.client.TrackApiClient;
-import org.turter.musicapp.data.remote.client.TrackApiClientImpl;
+import org.turter.musicapp.data.remote.client.AudioTrackApiClient;
+import org.turter.musicapp.data.remote.client.AudioTrackApiClientImpl;
 import org.turter.musicapp.data.dto.AudioTrackDto;
-import org.turter.musicapp.data.dto.NewAudioTrackDto;
+import org.turter.musicapp.data.dto.payload.NewAudioTrackPayload;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,7 +14,7 @@ import java.io.File;
 
 public class AudioTrackUploadService extends Service<Void> {
     private final File selectedFile;
-    private final TrackApiClient client = TrackApiClientImpl.getInstance();
+    private final AudioTrackApiClient client = AudioTrackApiClientImpl.getInstance();
 
     public AudioTrackUploadService(File selectedFile) {
         this.selectedFile = selectedFile;
@@ -26,7 +26,7 @@ public class AudioTrackUploadService extends Service<Void> {
             @Override
             protected Void call() throws Exception {
                 byte[] fileData = Files.readAllBytes(selectedFile.toPath());
-                NewAudioTrackDto trackDto = new NewAudioTrackDto(selectedFile.getName(), fileData);
+                NewAudioTrackPayload trackDto = new NewAudioTrackPayload(selectedFile.getName(), fileData);
 
                 // Отправка HTTP-запроса
                 AudioTrackDto result = client.createTrack(trackDto);

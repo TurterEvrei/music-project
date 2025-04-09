@@ -44,7 +44,7 @@ public class CompositionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(payload));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     public CompositionInfo update(@Valid @RequestBody CompositionPayload payload) {
         return service.update(payload);
     }

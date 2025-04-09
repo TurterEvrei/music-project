@@ -2,8 +2,10 @@ package org.turter.musicapp.data.remote.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kotlin.Result;
 import org.turter.musicapp.data.dto.AudioTrackDto;
-import org.turter.musicapp.data.dto.NewAudioTrackDto;
+import org.turter.musicapp.data.dto.payload.AudioTrackPayload;
+import org.turter.musicapp.data.dto.payload.NewAudioTrackPayload;
 
 import java.io.IOException;
 import java.net.URI;
@@ -13,17 +15,17 @@ import java.net.http.HttpResponse;
 import java.util.Collections;
 import java.util.List;
 
-public class TrackApiClientImpl implements TrackApiClient {
-    private static final String BASE_URL = "http://localhost:8080/musicCatalogue/tracks";
+public class AudioTrackApiClientImpl implements AudioTrackApiClient {
+    private static final String BASE_URL = "http://localhost:8080/musicCatalogue_war_exploded/api/tracks";
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private static TrackApiClient instance;
+    private static AudioTrackApiClient instance;
 
-    private TrackApiClientImpl() {
+    private AudioTrackApiClientImpl() {
     }
 
-    public static TrackApiClient getInstance() {
-        if (instance == null) instance = new TrackApiClientImpl();
+    public static AudioTrackApiClient getInstance() {
+        if (instance == null) instance = new AudioTrackApiClientImpl();
         return instance;
     }
 
@@ -48,7 +50,7 @@ public class TrackApiClientImpl implements TrackApiClient {
     }
 
     @Override
-    public AudioTrackDto createTrack(NewAudioTrackDto payload) {
+    public AudioTrackDto createTrack(NewAudioTrackPayload payload) {
         try {
             String json = objectMapper.writeValueAsString(payload);
 
@@ -70,9 +72,31 @@ public class TrackApiClientImpl implements TrackApiClient {
     }
 
     @Override
-    public boolean deleteTrack(long trackId) {
+    public AudioTrackDto updateTrack(AudioTrackPayload payload) {
+        try {
+            String json = objectMapper.writeValueAsString(payload);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL))
+                    .header("Content-Type", "application/json")
+                    .PUT(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                return objectMapper.readValue(response.body(), AudioTrackDto.class);
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean deleteTrack(long id) {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "?id=" + trackId))
+                .uri(URI.create(BASE_URL + "/" + id))
                 .DELETE()
                 .build();
 

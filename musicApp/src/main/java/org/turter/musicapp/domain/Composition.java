@@ -1,29 +1,26 @@
 package org.turter.musicapp.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Composition {
-    private String name;
-    private final List<TrackClip> tracks = new ArrayList<>();
+    private Long id;
+    private String title;
+    private List<TrackClip> tracks = new ArrayList<>();
     private String resultFilePath;
 
-    public Composition(String name) {
-        this.name = name;
-    }
-
-    public boolean isResultFilePathExists() {
-        return resultFilePath != null && !resultFilePath.isEmpty();
-    }
-
-    public String getResultFilePath() {
-        return resultFilePath;
-    }
-
-    public Composition setResultFilePath(String resultFilePath) {
-        this.resultFilePath = resultFilePath;
-        return this;
+    public Composition(String title) {
+        this.title = title;
     }
 
     public Composition addTrack(TrackClip clip) {
@@ -40,19 +37,14 @@ public class Composition {
         return Collections.unmodifiableList(tracks);
     }
 
+    public boolean isNew() {
+        return id == null || id == 0;
+    }
+
     public double getTotalDurationMs() {
         return tracks.stream()
                 .mapToDouble(clip -> clip.getStartTimeMs() + clip.getDurationMs())
                 .max()
                 .orElse(0);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Composition setName(String name) {
-        this.name = name;
-        return this;
     }
 }

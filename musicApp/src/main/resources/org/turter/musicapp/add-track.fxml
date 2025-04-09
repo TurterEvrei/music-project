@@ -7,56 +7,35 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import javafx.scene.control.ProgressIndicator?>
-<!--<VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"-->
-<!--      fx:controller="org.turter.musicapp.ui.modal.track.add.AddTrackController">-->
-<!--    <children>-->
-<!--        <Label fx:id="selectedFileLabel" text="Файл не выбран" />-->
-<!--        <Button fx:id="chooseFileButton" text="Выбрать файл" onAction="#handleChooseFile" />-->
-
-<!--        &lt;!&ndash; Индикатор загрузки &ndash;&gt;-->
-<!--        <ProgressIndicator fx:id="progressIndicator" visible="false" />-->
-
-<!--        <HBox spacing="10" alignment="CENTER_RIGHT">-->
-<!--            <children>-->
-<!--                <Button fx:id="confirmButton" text="Подтвердить" onAction="#handleConfirm" />-->
-<!--                <Button fx:id="closeButton" text="Закрыть" onAction="#handleClose" />-->
-<!--            </children>-->
-<!--        </HBox>-->
-<!--    </children>-->
-<!--    <padding>-->
-<!--        <Insets top="15" left="15" right="15" bottom="15"/>-->
-<!--    </padding>-->
-<!--</VBox>-->
-
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="org.turter.musicapp.ui.modal.track.add.AddTrackController">
-<children>
-    <VBox spacing="10">
-        <children>
-            <Label fx:id="selectedFileLabel" text="Файл не выбран" />
-            <Button fx:id="chooseFileButton" text="Выбрать файл" onAction="#handleChooseFile" />
-            <HBox spacing="10" alignment="CENTER_RIGHT">
-                <children>
-                    <Button fx:id="confirmButton" text="Подтвердить" onAction="#handleConfirm" />
-                    <Button fx:id="closeButton" text="Закрыть" onAction="#handleClose" />
-                </children>
-            </HBox>
-        </children>
-        <padding>
-            <Insets top="15" left="15" right="15" bottom="15"/>
-        </padding>
-    </VBox>
+    <children>
+        <VBox spacing="10">
+            <children>
+                <Label fx:id="selectedFileLabel" text="Файл не выбран"/>
+                <Button fx:id="chooseFileButton" text="Выбрать файл" onAction="#handleChooseFile"/>
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <children>
+                        <Button fx:id="confirmButton" text="Подтвердить" onAction="#handleConfirm"/>
+                        <Button fx:id="closeButton" text="Закрыть" onAction="#handleClose"/>
+                    </children>
+                </HBox>
+            </children>
+            <padding>
+                <Insets top="15" left="15" right="15" bottom="15"/>
+            </padding>
+        </VBox>
 
-    <AnchorPane fx:id="overlayPane" visible="false" style="-fx-background-color: rgba(0, 0, 0, 0.4);">
-        <children>
-            <StackPane AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
-                       AnchorPane.bottomAnchor="0">
-                <ProgressIndicator fx:id="progressIndicator"/>
-            </StackPane>
-        </children>
-    </AnchorPane>
+        <AnchorPane fx:id="overlayPane" visible="false" style="-fx-background-color: rgba(0, 0, 0, 0.4);">
+            <children>
+                <StackPane AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+                           AnchorPane.bottomAnchor="0">
+                    <ProgressIndicator fx:id="progressIndicator"/>
+                </StackPane>
+            </children>
+        </AnchorPane>
 
-</children>
+    </children>
 </StackPane>

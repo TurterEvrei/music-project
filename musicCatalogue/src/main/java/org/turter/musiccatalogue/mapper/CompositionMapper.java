@@ -1,6 +1,8 @@
 package org.turter.musiccatalogue.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.turter.musiccatalogue.dto.CompositionInfo;
 import org.turter.musiccatalogue.dto.CompositionPreview;
 import org.turter.musiccatalogue.dto.payload.CompositionPayload;
@@ -23,6 +25,8 @@ public interface CompositionMapper {
 
     Composition toNewEntity(String title, Set<TrackClip> tracks);
 
-    Composition toEntity(CompositionPayload payload, Set<TrackClip> tracks);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "tracks", source = "tracks")
+    Composition toEntity(CompositionPayload payload, Set<TrackClip> tracks, @MappingTarget Composition composition);
 
 }
