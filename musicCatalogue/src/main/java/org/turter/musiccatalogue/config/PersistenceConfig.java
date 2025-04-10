@@ -2,12 +2,8 @@ package org.turter.musiccatalogue.config;
 
 import org.flywaydb.core.Flyway;
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.*;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -22,17 +18,30 @@ import java.util.Properties;
 @ComponentScan(basePackages = "org.turter.musiccatalogue")
 @PropertySource("classpath:application.properties")
 public class PersistenceConfig {
+    @Value("${db.driver}")
+    private String dbDriver;
+
+    @Value("${db.url}")
+    private String dbUrl;
+
+    @Value("${db.username}")
+    private String dbUser;
+
+    @Value("${db.password}")
+    private String dbPassword;
+
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource ds = new DriverManagerDataSource();
-        ds.setDriverClassName("org.postgresql.Driver");
-        ds.setUrl("jdbc:postgresql://localhost:5434/musicdb");
-        ds.setUsername("user");
-        ds.setPassword("password");
+        ds.setDriverClassName(dbDriver);
+        ds.setUrl(dbUrl);
+        ds.setUsername(dbUser);
+        ds.setPassword(dbPassword);
         return ds;
     }
 
     @Bean
+    @DependsOn("flyway")
     public LocalSessionFactoryBean sessionFactory(DataSource ds) {
         LocalSessionFactoryBean factory = new LocalSessionFactoryBean();
         factory.setDataSource(ds);
@@ -52,13 +61,15 @@ public class PersistenceConfig {
         return new HibernateTransactionManager(sessionFactory);
     }
 
-    @Bean(initMethod = "migrate")
+    @Bean
     public Flyway flyway(DataSource ds) {
-        return Flyway.configure()
+        Flyway flyway = Flyway.configure()
                 .dataSource(ds)
                 .locations("classpath:db/migration")
                 .baselineOnMigrate(true)
                 .load();
+        flyway.migrate();
+        return flyway;
     }
 }
 

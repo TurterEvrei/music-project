@@ -6,7 +6,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.turter.musiccatalogue.repository.GenericDao;
-import org.turter.musiccatalogue.util.ExceptionSupplier;
 
 import java.io.Serializable;
 import java.util.List;

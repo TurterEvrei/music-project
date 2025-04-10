@@ -1,9 +1,10 @@
 package org.turter.musiccatalogue.entity;
 
-import lombok.*;
-
 import jakarta.persistence.*;
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "audio_tracks")

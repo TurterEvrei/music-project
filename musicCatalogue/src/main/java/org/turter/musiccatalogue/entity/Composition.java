@@ -1,8 +1,8 @@
 package org.turter.musiccatalogue.entity;
 
+import jakarta.persistence.*;
 import lombok.*;
 
-import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 

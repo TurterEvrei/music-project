@@ -2,7 +2,6 @@ package org.turter.musiccatalogue.dto.payload;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.turter.musiccatalogue.dto.AudioTrackDto;
 
 import java.util.Set;
 

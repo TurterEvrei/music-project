@@ -17,6 +17,10 @@ services:
   music-catalogue:
     build: .
     container_name: music-catalogue
+    environment:
+      DB_URL: jdbc:postgresql://music-db:5432/musicdb
+      DB_USERNAME: user
+      DB_PASSWORD: password
     ports:
       - "8080:8080"
     depends_on:

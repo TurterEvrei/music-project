@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import org.turter.musiccatalogue.dto.AudioTrackDto;
 import org.turter.musiccatalogue.dto.payload.AudioTrackPayload;
 import org.turter.musiccatalogue.dto.payload.NewAudioTrackPayload;
-import org.turter.musiccatalogue.entity.AudioTrack;
 import org.turter.musiccatalogue.service.AudioTrackService;
 
 import java.util.List;

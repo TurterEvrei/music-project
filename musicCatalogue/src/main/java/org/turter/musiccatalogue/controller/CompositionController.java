@@ -5,10 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.turter.musiccatalogue.dto.payload.CompositionPayload;
-import org.turter.musiccatalogue.dto.payload.NewCompositionPayload;
 import org.turter.musiccatalogue.dto.CompositionInfo;
 import org.turter.musiccatalogue.dto.CompositionPreview;
+import org.turter.musiccatalogue.dto.payload.CompositionPayload;
+import org.turter.musiccatalogue.dto.payload.NewCompositionPayload;
 import org.turter.musiccatalogue.service.CompositionService;
 
 import java.util.List;
